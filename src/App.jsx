@@ -1,21 +1,18 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CalendarDays, ChevronLeft, ChevronRight, Heart, History, Home, Sparkles, X } from "lucide-react";
+import { CalendarDays, ChevronLeft, History, Home, Sparkles, X } from "lucide-react";
 import "./App.css";
+
 import presenciaFront from "./assets/cards/presencia-front.png";
-import presenciaBack from "./assets/cards/presencia-back.jpeg";
-
+import presenciaBack from "./assets/cards/presencia-back.png";
 import bajarATierraFront from "./assets/cards/bajar-a-tierra-front.png";
-import bajarATierraBack from "./assets/cards/bajar-a-tierra-back.jpeg";
-
+import bajarATierraBack from "./assets/cards/bajar-a-tierra-back.png";
 import abrazarFront from "./assets/cards/abrazar-front.png";
 import abrazarBack from "./assets/cards/abrazar-back.png";
-
 import incomodarFront from "./assets/cards/incomodar-front.png";
-import incomodarBack from "./assets/cards/incomodar-back.jpeg";
-
+import incomodarBack from "./assets/cards/incomodar-back.png";
 import expandirFront from "./assets/cards/expandir-front.png";
-import expandirBack from "./assets/cards/expandir-back.jpeg";
+import expandirBack from "./assets/cards/expandir-back.png";
 
 const APP_VERSION = "0.1.0";
 const STORAGE_KEY = "eco-del-ser-reservas-v1";
