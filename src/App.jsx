@@ -202,7 +202,7 @@ export default function App() {
       whileTap={{ scale: 0.97 }}
       animate={{ scale: isSelected ? 1.06 : 0.94, y: isSelected ? -12 : 0, rotate: index % 2 === 0 ? -2 : 2 }}
       transition={{ type: "spring", stiffness: 220, damping: 24 }}
-      className="relative h-[220px] min-w-[145px] snap-center rounded-[2rem] border-4 bg-[#f7efe1] p-1.5 text-left shadow-2xl"
+      className="relative h-[420px] min-w-[78vw] max-w-[360px] snap-center rounded-[2rem] border-4 bg-[#f7efe1] p-1.5 text-left shadow-2xl"
       style={{ borderColor: experience.accent }}
     >
       <div className="absolute left-1/2 top-3 z-10 h-4 w-16 -translate-x-1/2 rounded-full bg-black/10" />
@@ -279,24 +279,56 @@ export default function App() {
                 <p className="mt-1 text-sm text-[#f8ead4]/70">Deslizá hacia los lados. Doble toque para abrir en pantalla completa.</p>
               </div>
 
-              <div className="-mx-4 flex snap-x gap-5 overflow-x-auto px-6 pb-8 pt-5">
+              <div className="-mx-4 flex snap-x snap-mandatory gap-6 overflow-x-auto px-[10vw] pb-8 pt-5">
                 {EXPERIENCES.map((experience, index) => (
                   <ExperienceCard key={experience.id} experience={experience} index={index} />
                 ))}
               </div>
 
-              <CardShell className="mt-auto p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <div className="text-xs font-bold uppercase tracking-[0.22em] text-white/50">Experiencia seleccionada</div>
-                    <h3 className="mt-1 text-2xl font-black">{selectedExperience.title}</h3>
-                    <p className="text-sm text-white/70">Facilitador/a: {selectedExperience.guide}</p>
-                  </div>
-                  <button type="button" onClick={() => setScreen("booking")} className="rounded-full bg-[#f8ead4] px-5 py-3 text-sm font-black text-[#2a1b12]">
-                    Reservar
-                  </button>
-                </div>
-              </CardShell>
+              <CardShell className="mt-auto p-5">
+  <div className="text-center">
+    <div className="text-xs font-bold uppercase tracking-[0.22em] text-white/50">
+      Experiencia seleccionada
+    </div>
+
+    <h3 className="mt-2 text-3xl font-black">{selectedExperience.title}</h3>
+    <p className="mt-1 text-sm font-bold text-white/70">
+      Facilitador/a: {selectedExperience.guide}
+    </p>
+
+    <p className="mt-4 text-lg font-bold leading-snug text-[#f8ead4]">
+      {selectedExperience.phrase}
+    </p>
+
+    <div className="mx-auto my-4 h-px w-20 bg-white/20" />
+
+    <h4 className="text-base font-black text-white/90">
+      {selectedExperience.backTitle}
+    </h4>
+
+    <p className="mt-2 text-sm leading-relaxed text-white/70">
+      {selectedExperience.description}
+    </p>
+
+    <div className="mt-5 grid grid-cols-2 gap-3">
+      <button
+        type="button"
+        onClick={() => setFullscreenCardId(selectedExperience.id)}
+        className="rounded-full bg-white/10 px-4 py-3 text-sm font-black text-white"
+      >
+        Ver carta
+      </button>
+
+      <button
+        type="button"
+        onClick={() => setScreen("booking")}
+        className="rounded-full bg-[#f8ead4] px-4 py-3 text-sm font-black text-[#2a1b12]"
+      >
+        Reservar
+      </button>
+    </div>
+  </div>
+</CardShell>
             </motion.main>
           ) : null}
 
