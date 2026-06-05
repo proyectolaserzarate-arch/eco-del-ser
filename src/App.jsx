@@ -233,12 +233,12 @@ export default function App() {
 }
 
   return (
-    <div className="min-h-screen overflow-hidden bg-[#efe7d8] text-[#5c4634]" style={{ fontFamily: "Nunito, ui-sans-serif, system-ui" }}>
+    <div className="relative min-h-screen overflow-hidden bg-[#efe7d8] text-[#5c4634]" style={{ fontFamily: "Nunito, ui-sans-serif, system-ui" }}>
       <div className="pointer-events-none fixed left-3 top-3 z-[70] rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold text-white/70">
         Eco del Ser v{APP_VERSION}
       </div>
 
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,#fff8ed_0%,#efe7d8_48%,#d8c4a8_100%)]" />
+      <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,#fff8ed_0%,#efe7d8_48%,#d8c4a8_100%)]" />
       <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col px-4 py-5">
         <nav className="mb-5 flex items-center justify-between rounded-full border border-white/10 bg-white/10 px-3 py-2 backdrop-blur">
           <button type="button" onClick={() => setScreen("home")} className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-bold">
