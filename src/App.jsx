@@ -14,7 +14,7 @@ import incomodarBack from "./assets/cards/incomodar-back.png";
 import expandirFront from "./assets/cards/expandir-front.png";
 import expandirBack from "./assets/cards/expandir-back.png";
 
-const APP_VERSION = "0.1.0";
+const APP_VERSION = "0.2.0-sepia";
 const STORAGE_KEY = "eco-del-ser-reservas-v1";
 
 const EXPERIENCES = [
