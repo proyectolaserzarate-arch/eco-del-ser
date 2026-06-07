@@ -145,6 +145,7 @@ export default function App() {
   const [flippedCardId, setFlippedCardId] = useState(null);
   const [selectedDateKey, setSelectedDateKey] = useState(toDateKey(getNextSaturdays(1)[0]));
   const [selectedSlotId, setSelectedSlotId] = useState(TIME_SLOTS[0].id);
+  const [guestName, setGuestName] = useState("");
   const [reservations, setReservations] = useState(loadReservations);
 
   const saturdays = useMemo(() => getNextSaturdays(5), []);
@@ -164,30 +165,57 @@ export default function App() {
         reservation.slotId === slotId
     );
   }
+function createReservation() {
+  if (isSlotTaken(selectedExperience, selectedDateKey, selectedSlotId)) return;
 
-  function createReservation() {
-    if (isSlotTaken(selectedExperience, selectedDateKey, selectedSlotId)) return;
-
-    const slot = TIME_SLOTS.find((item) => item.id === selectedSlotId);
-    const reservation = {
-      id: crypto.randomUUID(),
-      experienceId: selectedExperience.id,
-      title: selectedExperience.title,
-      guide: selectedExperience.guide,
-      dateKey: selectedDateKey,
-      dateLabel: formatDate(new Date(`${selectedDateKey}T12:00:00`)),
-      slotId: selectedSlotId,
-      slotLabel: slot?.label || "",
-      createdAt: new Date().toISOString(),
-    };
-
-    setReservations((previous) => [reservation, ...previous]);
-    setScreen("history");
+  if (!guestName.trim()) {
+    alert("Escribí el nombre de la persona interesada.");
+    return;
   }
 
-  function removeReservation(id) {
-    setReservations((previous) => previous.filter((reservation) => reservation.id !== id));
-  }
+  const slot = TIME_SLOTS.find((item) => item.id === selectedSlotId);
+
+  const reservation = {
+    id: crypto.randomUUID(),
+    experienceId: selectedExperience.id,
+    title: selectedExperience.title,
+    guide: selectedExperience.guide,
+    guestName: guestName.trim(),
+    dateKey: selectedDateKey,
+    dateLabel: formatDate(new Date(`${selectedDateKey}T12:00:00`)),
+    slotId: selectedSlotId,
+    slotLabel: slot?.label || "",
+    createdAt: new Date().toISOString(),
+  };
+
+  setReservations((previous) => [reservation, ...previous]);
+
+  setGuestName("");
+
+  setScreen("history");
+}
+
+function removeReservation(id) {
+  setReservations((previous) =>
+    previous.filter((reservation) => reservation.id !== id)
+  );
+}
+
+function sendReservationWhatsApp(reservation) {
+  const message = [
+    "Hola, quiero confirmar una reserva de Eco del Ser.",
+    "",
+    `Nombre: ${reservation.guestName || "Sin nombre"}`,
+    `Experiencia: ${reservation.title}`,
+    `Facilitador/a: ${reservation.guide}`,
+    `Fecha: ${reservation.dateLabel}`,
+    `Horario: ${reservation.slotLabel}`,
+  ].join("\n");
+
+  const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+
+  window.open(url, "_blank");
+}
 
   function ExperienceCard({ experience, index }) {
   const isSelected = selectedExperienceId === experience.id;
@@ -239,7 +267,7 @@ export default function App() {
       </div>
 
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,#fff8ed_0%,#efe7d8_48%,#d8c4a8_100%)]" />
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col px-4 py-5">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col items-center px-4 py-5 text-center">
         <nav className="mb-5 flex items-center justify-between rounded-full border border-white/10 bg-white/10 px-3 py-2 backdrop-blur">
           <button type="button" onClick={() => setScreen("home")} className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-bold">
             <Home className="h-4 w-4" /> Inicio
@@ -387,14 +415,27 @@ export default function App() {
                 </div>
               </CardShell>
 
-              <button
-                type="button"
-                onClick={createReservation}
-                disabled={isSlotTaken(selectedExperience, selectedDateKey, selectedSlotId)}
-                className="mt-auto rounded-full bg-[#8c6b4f] px-8 py-4 text-base font-black text-white shadow-xl disabled:opacity-40"
-              >
-                Confirmar reserva
-              </button>
+              <CardShell className="p-5">
+  <div className="mb-3 text-sm font-black uppercase tracking-[0.16em] text-[#5c4634]/70">
+    Nombre de la persona interesada
+  </div>
+
+  <input
+    value={guestName}
+    onChange={(event) => setGuestName(event.target.value)}
+    placeholder="Ej: María"
+    className="w-full rounded-2xl border border-[#cdb899] bg-[#fff8ed] px-4 py-3 text-center text-base font-bold text-[#5c4634] outline-none"
+  />
+</CardShell>
+
+<button
+  type="button"
+  onClick={createReservation}
+  disabled={isSlotTaken(selectedExperience, selectedDateKey, selectedSlotId)}
+  className="mt-auto rounded-full bg-[#8c6b4f] px-8 py-4 text-base font-black text-white shadow-xl disabled:opacity-40"
+>
+  Confirmar reserva
+</button>
             </motion.main>
           ) : null}
 
@@ -416,6 +457,17 @@ export default function App() {
                         <p className="text-sm text-white/70">Con {reservation.guide}</p>
                         <p className="mt-2 text-sm font-bold text-white/85">{reservation.dateLabel}</p>
                         <p className="text-sm text-white/70">{reservation.slotLabel}</p>
+                        <p className="mt-2 text-sm font-bold text-[#5c4634]">
+  {reservation.guestName}
+</p>
+
+<button
+  type="button"
+  onClick={() => sendReservationWhatsApp(reservation)}
+  className="mt-3 rounded-full bg-[#25D366] px-4 py-2 text-sm font-black text-white shadow-md"
+>
+  Enviar por WhatsApp
+</button>
                       </div>
                       <button type="button" onClick={() => removeReservation(reservation.id)} className="rounded-full bg-white/10 p-2">
                         <X className="h-4 w-4" />
@@ -429,42 +481,70 @@ export default function App() {
         </AnimatePresence>
 
         <AnimatePresence>
-          {fullscreenExperience ? (
-            <motion.div className="fixed inset-0 z-[90] bg-[#160f0b]/90 p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setFullscreenCardId(null)}>
-              <motion.div
-                initial={{ scale: 0.92, y: 30 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.92, y: 30 }}
-                className="mx-auto flex h-full max-w-md flex-col rounded-[2.5rem] border-4 bg-[#f7efe1] p-4 text-[#2d2520] shadow-2xl"
-                style={{ borderColor: fullscreenExperience.accent }}
-                onClick={(event) => event.stopPropagation()}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="text-xs font-black uppercase tracking-[0.24em] text-black/45">{fullscreenExperience.guide}</div>
-                  <button type="button" onClick={() => setFullscreenCardId(null)} className="rounded-full bg-black/10 p-3">
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
+  {fullscreenExperience ? (
+    <motion.div
+      className="fixed inset-0 z-[90] flex items-center justify-center bg-[#3b2b20]/65 p-4 backdrop-blur-sm"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={() => setFullscreenCardId(null)}
+    >
+      <motion.div
+        initial={{ scale: 0.92, y: 30 }}
+        animate={{ scale: 1, y: 0 }}
+        exit={{ scale: 0.92, y: 30 }}
+        className="relative flex h-[92vh] w-full max-w-[430px] flex-col rounded-[2rem] bg-[#f8efe2] p-3 shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={() => setFullscreenCardId(null)}
+          className="absolute right-4 top-4 z-20 rounded-full bg-[#5c4634]/85 p-3 text-white shadow-lg"
+        >
+          <X className="h-5 w-5" />
+        </button>
 
-                <div className="mt-4 flex flex-1 flex-col justify-between rounded-[2rem] p-6" style={{ backgroundColor: fullscreenExperience.color }}>
-                  <div>
-                    <div className="text-xs font-black uppercase tracking-[0.24em] text-black/45">Eco del Ser</div>
-                    <h2 className="mt-6 text-5xl font-black leading-none">{fullscreenExperience.title}</h2>
-                    <p className="mt-5 text-lg font-bold leading-relaxed text-black/60">{fullscreenExperience.phrase}</p>
-                  </div>
+        <img
+          src={
+            flippedCardId === fullscreenExperience.id
+              ? fullscreenExperience.backImage
+              : fullscreenExperience.frontImage
+          }
+          alt={fullscreenExperience.title}
+          className="min-h-0 flex-1 rounded-[1.5rem] object-contain"
+        />
 
-                  <div>
-                    <h3 className="text-xl font-black">{fullscreenExperience.backTitle}</h3>
-                    <p className="mt-2 text-sm font-semibold leading-relaxed text-black/65">{fullscreenExperience.description}</p>
-                    <button type="button" onClick={() => { setSelectedExperienceId(fullscreenExperience.id); setFullscreenCardId(null); setScreen("booking"); }} className="mt-6 w-full rounded-full bg-[#2d2520] px-6 py-4 font-black text-[#f8ead4]">
-                      Quiero vivir esta experiencia
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() =>
+              setFlippedCardId(
+                flippedCardId === fullscreenExperience.id
+                  ? null
+                  : fullscreenExperience.id
+              )
+            }
+            className="rounded-full bg-[#e8ddcb] px-4 py-3 text-sm font-black text-[#5c4634] shadow-md"
+          >
+            Girar carta
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedExperienceId(fullscreenExperience.id);
+              setFullscreenCardId(null);
+              setScreen("booking");
+            }}
+            className="rounded-full bg-[#8c6b4f] px-4 py-3 text-sm font-black text-white shadow-lg"
+          >
+            Reservar
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  ) : null}
+</AnimatePresence>
       </div>
     </div>
   );

@@ -57,14 +57,26 @@ body,
   min-width: 320px;
   min-height: 100vh;
   background: #efe7d8;
+  color: #5c4634;
 }
 
 * {
   box-sizing: border-box;
 }
 
-button {
+button,
+input,
+select,
+textarea {
   font-family: inherit;
+}
+
+button {
+  border: none;
+}
+
+body {
+  text-align: center;
 }
 
 h1,
