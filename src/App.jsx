@@ -15,7 +15,7 @@ import incomodarBack from "./assets/cards/incomodar-back.png";
 import expandirFront from "./assets/cards/expandir-front.png";
 import expandirBack from "./assets/cards/expandir-back.png";
 
-const APP_VERSION = "0.2.0-sepia";
+const APP_VERSION = "0.2.1-fullscreen";
 const STORAGE_KEY = "eco-del-ser-reservas-v1";
 
 const EXPERIENCES = [
@@ -223,8 +223,8 @@ function sendReservationWhatsApp(reservation) {
   const isFlipped = flippedCardId === experience.id;
 
   return (
-    <motion.button
-  type="button"
+    <motion.div
+  role="button"
   layout
   onClick={() => {
   setSelectedExperienceId(experience.id);
@@ -277,7 +277,7 @@ function sendReservationWhatsApp(reservation) {
       </button>
     </div>
   </div>
-</motion.button>
+</motion.div>
   );
 }
 
