@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CalendarDays, ChevronLeft, History, Home, Sparkles, X } from "lucide-react";
 import "./App.css";
 
+import logoEco from "./assets/logo-eco.jpeg";
 import presenciaFront from "./assets/cards/presencia-front.png";
 import presenciaBack from "./assets/cards/presencia-back.png";
 import bajarATierraFront from "./assets/cards/bajar-a-tierra-front.png";
@@ -223,40 +224,57 @@ function sendReservationWhatsApp(reservation) {
 
   return (
     <motion.button
-      type="button"
-      layout
-      onClick={() => setSelectedExperienceId(experience.id)}
-      onDoubleClick={() => setFullscreenCardId(experience.id)}
-      whileTap={{ scale: 0.97 }}
-      animate={{ scale: isSelected ? 1.06 : 0.94, y: isSelected ? -12 : 0, rotate: index % 2 === 0 ? -2 : 2 }}
-      transition={{ type: "spring", stiffness: 220, damping: 24 }}
-      className="relative h-[420px] min-w-[78vw] max-w-[360px] snap-center rounded-[2rem] border-4 bg-[#f7efe1] p-1.5 text-left shadow-2xl"
-      style={{ borderColor: experience.accent }}
-    >
-      <div className="absolute left-1/2 top-3 z-10 h-4 w-16 -translate-x-1/2 rounded-full bg-black/10" />
+  type="button"
+  layout
+  onClick={() => setSelectedExperienceId(experience.id)}
+  whileTap={{ scale: 0.97 }}
+  animate={{
+    scale: isSelected ? 1.08 : 0.88,
+    y: isSelected ? -18 : 0,
+    opacity: isSelected ? 1 : 0.6,
+    rotate: isSelected ? 0 : index % 2 === 0 ? -2 : 2,
+  }}
+  transition={{ type: "spring", stiffness: 220, damping: 24 }}
+  className={
+    "relative h-[420px] min-w-[78vw] max-w-[360px] snap-center rounded-[2rem] border-4 bg-[#f7efe1] p-1.5 text-left " +
+    (isSelected ? "shadow-[0_22px_45px_rgba(80,55,35,0.35)]" : "shadow-lg")
+  }
+  style={{ borderColor: isSelected ? experience.accent : "#b8aa98" }}
+>
+  <div className="absolute left-1/2 top-3 z-10 h-4 w-16 -translate-x-1/2 rounded-full bg-black/10" />
 
-      <div className="relative h-full overflow-hidden rounded-[1.5rem] bg-black">
-        <img
-          src={isFlipped ? experience.backImage : experience.frontImage}
-          alt={experience.title}
-          className="h-full w-full object-contain bg-[#f7efe1]"
-        />
+  <div className="relative h-full overflow-hidden rounded-[1.5rem] bg-black">
+    <img
+      src={isFlipped ? experience.backImage : experience.frontImage}
+      alt={experience.title}
+      className="h-full w-full object-contain bg-[#f7efe1]"
+    />
 
-        <div className="absolute inset-x-3 bottom-3 flex items-center justify-between rounded-full bg-black/45 px-3 py-2 text-xs font-bold uppercase tracking-[0.16em] text-white backdrop-blur">
-          <span>{isSelected ? "Seleccionada" : experience.guide}</span>
-          <button
-            type="button"
-            onClick={(event) => {
-              event.stopPropagation();
-              setFlippedCardId(isFlipped ? null : experience.id);
-            }}
-            className="rounded-full bg-white/25 px-3 py-1"
-          >
-            Girar
-          </button>
-        </div>
-      </div>
-    </motion.button>
+    <div className="absolute inset-x-3 bottom-3 grid grid-cols-2 gap-2 rounded-2xl bg-[#5c4634]/80 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white backdrop-blur">
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          setFullscreenCardId(experience.id);
+        }}
+        className="rounded-full bg-[#f8ead4] px-3 py-2 text-[#5c4634] shadow-md"
+      >
+        Ver carta
+      </button>
+
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          setFlippedCardId(isFlipped ? null : experience.id);
+        }}
+        className="rounded-full bg-white/20 px-3 py-2 text-white"
+      >
+        Girar
+      </button>
+    </div>
+  </div>
+</motion.button>
   );
 }
 
@@ -283,17 +301,19 @@ function sendReservationWhatsApp(reservation) {
         <AnimatePresence mode="wait">
           {screen === "home" ? (
             <motion.main key="home" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className="flex flex-1 flex-col items-center justify-center text-center">
-              <div className="mb-6 flex h-32 w-32 items-center justify-center rounded-full border border-white/20 bg-white/10 text-5xl shadow-2xl">
-                ✺
-              </div>
+              <img
+  src={logoEco}
+  alt="Eco del Ser"
+  className="mb-6 w-44 rounded-full drop-shadow-2xl"
+/>
               <h1 className="text-5xl font-black tracking-tight">Eco del Ser</h1>
-              <p className="mt-5 max-w-md text-lg leading-relaxed text-[#f8ead4]/80">
+              <p className="mt-5 max-w-md text-lg font-semibold leading-relaxed text-[#5c4634]/80">
                 Espacios breves de reflexión, presencia y crecimiento personal. Elegí una carta y descubrí una experiencia.
               </p>
               <button
                 type="button"
                 onClick={() => setScreen("tarot")}
-                className="mt-8 rounded-full bg-[#f8ead4] px-8 py-4 text-base font-black text-[#2a1b12] shadow-2xl"
+                className="mt-8 rounded-full bg-[#8c6b4f] px-8 py-4 text-base font-black text-white shadow-2xl"
               >
                 Comenzar experiencia
               </button>
