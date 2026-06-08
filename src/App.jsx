@@ -226,7 +226,10 @@ function sendReservationWhatsApp(reservation) {
     <motion.button
   type="button"
   layout
-  onClick={() => setSelectedExperienceId(experience.id)}
+  onClick={() => {
+  setSelectedExperienceId(experience.id);
+  setFullscreenCardId(experience.id);
+}}
   whileTap={{ scale: 0.97 }}
   animate={{
     scale: isSelected ? 1.08 : 0.88,
@@ -279,7 +282,7 @@ function sendReservationWhatsApp(reservation) {
 }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#efe7d8] text-[#5c4634]" style={{ fontFamily: "Nunito, ui-sans-serif, system-ui" }}>
+    <div className="relative min-h-screen bg-[#efe7d8] text-[#5c4634]" style={{ fontFamily: "Nunito, ui-sans-serif, system-ui" }}>
       <div className="pointer-events-none fixed left-3 top-3 z-[70] rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold text-white/70">
         Eco del Ser v{APP_VERSION}
       </div>
@@ -304,7 +307,7 @@ function sendReservationWhatsApp(reservation) {
               <img
   src={logoEco}
   alt="Eco del Ser"
-  className="mb-6 w-44 rounded-full drop-shadow-2xl"
+  className="mb-6 h-28 w-28 object-contain rounded-full shadow-2xl"
 />
               <h1 className="text-5xl font-black tracking-tight">Eco del Ser</h1>
               <p className="mt-5 max-w-md text-lg font-semibold leading-relaxed text-[#5c4634]/80">
@@ -405,7 +408,7 @@ function sendReservationWhatsApp(reservation) {
                         key={dateKey}
                         type="button"
                         onClick={() => setSelectedDateKey(dateKey)}
-                        className={`rounded-2xl border px-4 py-3 text-left text-sm font-bold ${isSelected ? "border-[#f8ead4] bg-[#f8ead4] text-[#2a1b12]" : "border-white/15 bg-white/5 text-white/75"}`}
+                        className={`rounded-2xl border px-4 py-3 text-left text-sm font-bold ${isSelected ? "border-[#8c6b4f] bg-[#8c6b4f] text-white" : "border-white/15 bg-white/5 text-white/75"}`}
                       >
                         {formatDate(date)}
                       </button>
@@ -462,7 +465,7 @@ function sendReservationWhatsApp(reservation) {
           {screen === "history" ? (
             <motion.main key="history" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className="flex flex-1 flex-col">
               <h2 className="text-3xl font-black">Mis experiencias</h2>
-              <p className="mt-1 text-sm text-[#f8ead4]/70">Reservas guardadas localmente en este dispositivo.</p>
+              <p className="mt-1 text-sm font-semibold text-[#5c4634]/70">Reservas guardadas localmente en este dispositivo.</p>
 
               <div className="mt-5 space-y-3 overflow-y-auto pb-6">
                 {reservations.length === 0 ? (
