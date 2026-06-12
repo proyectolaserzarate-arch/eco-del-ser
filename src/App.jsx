@@ -16,7 +16,7 @@ import incomodarBack from "./assets/cards/incomodar-back.png";
 import expandirFront from "./assets/cards/expandir-front.png";
 import expandirBack from "./assets/cards/expandir-back.png";
 
-const APP_VERSION = "0.3.0-correccion";
+const APP_VERSION = "0.3.1-correccion";
 const STORAGE_KEY = "eco-del-ser-reservas-v2";
 
 const EXPERIENCES = [
@@ -225,7 +225,11 @@ export default function App() {
       <motion.div
         role="button"
         tabIndex={0}
-        onClick={() => openCard(experience)}
+        onClick={() => {
+  setSelectedExperienceId(experience.id);
+  setFullscreenSide("front");
+  setScreen("card");
+}}
         onKeyDown={(event) => {
           if (event.key === "Enter") openCard(experience);
         }}
@@ -293,11 +297,13 @@ export default function App() {
               exit={{ opacity: 0, y: -16 }}
               className="flex flex-1 flex-col items-center justify-center text-center"
             >
-              <img
-                src={logoEco}
-                alt="Eco del Ser"
-                className="mb-6 h-28 w-28 rounded-full object-contain shadow-2xl"
-              />
+              <div className="mb-6 flex h-28 w-28 items-center justify-center overflow-hidden rounded-full bg-[#fff8ed] shadow-2xl">
+  <img
+    src={logoEco}
+    alt="Eco del Ser"
+    className="h-full w-full object-contain"
+  />
+</div>
 
               <h1 className="text-5xl font-black tracking-tight text-[#5c4634]">
                 Eco del Ser
@@ -388,6 +394,56 @@ export default function App() {
             </motion.main>
           ) : null}
 
+          {screen === "card" ? (
+  <motion.main
+    key="card"
+    initial={{ opacity: 0, y: 16 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -16 }}
+    className="flex min-h-0 w-full max-w-md flex-1 flex-col items-center justify-center"
+  >
+    <img
+      src={
+        fullscreenSide === "back"
+          ? selectedExperience.backImage
+          : selectedExperience.frontImage
+      }
+      alt={selectedExperience.title}
+      className="max-h-[72vh] w-full rounded-[1.8rem] object-contain shadow-2xl"
+    />
+
+    <div className="mt-4 grid w-full grid-cols-3 gap-2">
+      <button
+        type="button"
+        onClick={() => setScreen("tarot")}
+        className="rounded-full bg-[#e8ddcb] px-3 py-3 text-sm font-black text-[#5c4634]"
+      >
+        Volver
+      </button>
+
+      <button
+        type="button"
+        onClick={() =>
+          setFullscreenSide((current) =>
+            current === "back" ? "front" : "back"
+          )
+        }
+        className="rounded-full bg-[#e8ddcb] px-3 py-3 text-sm font-black text-[#5c4634]"
+      >
+        Girar
+      </button>
+
+      <button
+        type="button"
+        onClick={() => setScreen("booking")}
+        className="rounded-full bg-[#8c6b4f] px-3 py-3 text-sm font-black text-white shadow-lg"
+      >
+        Reservar
+      </button>
+    </div>
+  </motion.main>
+) : null}
+
           {screen === "booking" ? (
             <motion.main
               key="booking"
@@ -424,11 +480,11 @@ export default function App() {
                         type="button"
                         onClick={() => setSelectedDateKey(dateKey)}
                         className={
-                          "rounded-2xl border px-4 py-3 text-center text-sm font-black shadow-sm " +
-                          (isSelected
-                            ? "border-[#8c6b4f] bg-[#8c6b4f] text-white"
-                            : "border-[#d7c4a7] bg-[#fff8ed] text-[#5c4634]")
-                        }
+  "rounded-2xl border-2 px-4 py-3 text-center text-sm font-black shadow-sm transition-all " +
+  (isSelected
+    ? "scale-[1.03] border-[#5c4634] bg-[#5c4634] text-white shadow-xl ring-4 ring-[#c9a67a]/60"
+    : "border-[#d7c4a7] bg-[#fff8ed] text-[#5c4634]")
+}
                       >
                         {formatDate(date)}
                       </button>
@@ -454,13 +510,13 @@ export default function App() {
                         disabled={taken}
                         onClick={() => setSelectedSlotId(slot.id)}
                         className={
-                          "rounded-2xl border px-4 py-3 text-center text-sm font-black shadow-sm " +
-                          (taken
-                            ? "border-[#d7c4a7] bg-[#efe4d4] text-[#5c4634]/35"
-                            : isSelected
-                              ? "border-[#8c6b4f] bg-[#8c6b4f] text-white"
-                              : "border-[#d7c4a7] bg-[#fff8ed] text-[#5c4634]")
-                        }
+  "rounded-2xl border-2 px-4 py-3 text-center text-sm font-black shadow-sm transition-all " +
+  (taken
+    ? "border-[#d7c4a7] bg-[#efe4d4] text-[#5c4634]/35"
+    : isSelected
+      ? "scale-[1.03] border-[#5c4634] bg-[#5c4634] text-white shadow-xl ring-4 ring-[#c9a67a]/60"
+      : "border-[#d7c4a7] bg-[#fff8ed] text-[#5c4634]")
+}
                       >
                         {slot.label} {taken ? "· Completo" : ""}
                       </button>
